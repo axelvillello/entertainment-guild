@@ -1,25 +1,31 @@
-import logo from './logo.svg';
 import './App.css';
+import {
+  BrowserRouter as Router, Routes, Route, Link
+} from 'react-router-dom';
+import Featured from './Featured';
+import Categories from './Categories';
+import axios from "axios";
 
-function App() {
+const App = () => {
+  
+  const padding = {
+    padding: 5
+  }
+
+
+  //Categories is a placeholder for Books, Games and Movies via 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <Router>
+      <div>
+        <Link style={padding} to="/">Home</Link>
+        <Link style={padding} to="/categories">Categories</Link>
+      </div> 
+
+      <Routes>
+        <Route path="/" element={<Featured/>} />
+        <Route path="/categories" element={<Categories/>} />
+      </Routes>
+    </Router>
+  );}
 
 export default App;
