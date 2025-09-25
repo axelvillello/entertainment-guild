@@ -9,7 +9,7 @@ import TestConnect from './TestConnect';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <TestConnect />
+    <App />
   </React.StrictMode>
 );
 
