@@ -1,11 +1,12 @@
+//Main application functionality, including navigation
+//WRITTEN BY: Axel Ello
+
 import './App.css';
 import {
   BrowserRouter as Router, Routes, Route, Link
 } from 'react-router-dom';
 import Featured from './Featured';
-import Categories from './Categories';
-import TestConnect from './TestConnect';
-import axios from "axios";
+import DisplayProducts from './DisplayProducts';
 
 const App = () => {
   
@@ -13,20 +14,19 @@ const App = () => {
     padding: 5
   }
 
-
-  //Categories is a placeholder for Books, Games and Movies
+  //parameterised navigation for reuse of displayProducts
   return (
     <Router>
       <div>
         <Link style={padding} to="/">Home</Link>
-        <Link style={padding} to="/categories">Categories</Link>
-        <Link style={padding} to="/testConnect">Database Test Connection</Link>
+        <Link style={padding} to="/displayProducts/Books">Books</Link>
+        <Link style={padding} to="/displayProducts/Movies">Movies</Link>
+        <Link style={padding} to="/displayProducts/Games">Games</Link>
       </div> 
-
+  
       <Routes>
         <Route path="/" element={<Featured/>} />
-        <Route path="/categories" element={<Categories/>} />
-        <Route path="/testConnect" element={<TestConnect/>} />
+        <Route path="/displayProducts/:genre" element={<DisplayProducts/>} /> 
       </Routes>
     </Router>
   );}
