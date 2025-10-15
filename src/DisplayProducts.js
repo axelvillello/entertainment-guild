@@ -12,6 +12,8 @@ const DisplayProducts = () => {
     const {genre} = useParams();
     const [products, setProducts] = useState([]);
     const [genreProducts, setGenreProducts] = useState([]);
+    const [stock, setStock] = useState([]);
+    const [pricedProducts, setPricedProducts] = useState([]);
 
     //GET request for all listed genres
     useEffect (() => { 
@@ -46,17 +48,42 @@ const DisplayProducts = () => {
         });
     }, [genreProducts])
 
+    //GET request for all stock 
+    useEffect (() => {
+        const promise = axios.get("http://localhost:3001/api/inft3050/Stocktake");
+        promise.then((response) => {
+            console.log(response);
+            const loadedStock = response.data.list;
+            setStock(loadedStock);
+        });
+    }, [products])
+
+    useEffect (() => {
+            if (products.length > 0 && stock.length > 0){
+                const priced = products.map(product => {
+                    const stockItem = stock.find(p => p.ProductId === product.ID);
+                return{
+                    ...product,
+                    Price: stockItem ? stockItem.Price : null,
+                };
+            });
+                setPricedProducts(priced);
+            }
+    }, [stock, products])
+
     return (
         <div>
             <h1>{genre}</h1>
-            {products.length > 0 ?
-                (
-                    products.map((p) => (<Product key={p.ID} title={p.Name} author={p.Author} published={p.Published}/>))
-                ) 
-                : 
-                (<p>{genre} are out of stock!</p>)
+            <div className="Container-flex">
+                {products.length > 0 ?
+                    (
+                        pricedProducts.map((p) => (<Product key={p.ID} title={p.Name} author={p.Author} published={p.Published} description={p.Description} price={p.Price}/>))
+                    ) 
+                    : 
+                    (<p>{genre} are out of stock!</p>)
 
-            }
+                }
+            </div>
         </div>
     );
 }

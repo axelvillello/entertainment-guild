@@ -43,7 +43,7 @@ const generateSalt = () => {
 }
 
 //Add new user
-const tryAddNewUser = (username, password, email, name, setResult) => {
+const tryAddNewUser = async (username, password, email, name, setResult) => {
     const headers = {
         'Accept': 'application/json',
     };
@@ -57,19 +57,26 @@ const tryAddNewUser = (username, password, email, name, setResult) => {
         HashPW: ""
     }
 
-    //Create hash of salt and password and POST new user
-    sha256(newCredentials.Salt + password).then(hashedPW => {
+    try {
+        const hashedPW = await sha256(newCredentials.Salt + password);
         newCredentials.HashPW = hashedPW;
-        console.log(newCredentials);
-    }).then(axios.post(API_PREFIX_LONG + "/User", newCredentials,
-        { headers: headers, withCredentials: true }) //withCredentials to include auth cookie
-    ).then(response => {
-        console.log("Added user successfully");
+
+        console.log("Final user object:", newCredentials);
+
+        const response = await axios.post(API_PREFIX_LONG + "/User", newCredentials, 
+            {
+                headers: headers,
+                withCredentials: true
+            });
+
+        console.log("Added user successfully:", response);
         setResult("Success");
-    }).catch(error => {
-        console.error('Error posting data:', error);
+    } 
+    catch (error) 
+    {
+        console.error("Error posting data:", error);
         setResult("Fail");
-    });
+    }
 }
 
 export { tryAddNewUser, tryLoginUser };
