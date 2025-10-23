@@ -2,41 +2,59 @@
 //generically for many different types of products
 //WRITTEN BY: Axel Ello
 import { useState } from "react";
+import { useCart } from "./CartProvider";
 
 const Product = (props) => {
     const [enlarged, setEnlarged] = useState(false);
+    const cart = useCart();
 
     return (
-        <button
+        <div
             onClick={() => setEnlarged(!enlarged)}
             style={{
-                height: "200px",
-                width: "200px",
+                height: enlarged? "400px" : "200px",
+                width: enlarged? "400px" : "200px",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 overflow: "hidden",
                 margin: "10px",
-                padding: enlarged ? "160px 160px" : "10px 20px",
-                transition: "all 0.1s"
+                padding: "10px",
+                transition: "all 0.3s",
+                backgroundColor: "#ADD8E6",
+                cursor: "pointer"
             }}>
             {!enlarged?
             (
                 <div>
-                    <h3>{props.title}</h3>
-                    <p>${props.price}</p>
+                    <h2>{props.title}</h2>
+                    <h3>{props.source}</h3>
+                    <p>${props.price} AUD </p>
                 </div>
             )
             :
             (
                 <div>
-                    <h3>{props.title}</h3>
-                    <p>${props.price}</p>
+                    <h2>{props.title}</h2>
+                    <h3>{props.source}</h3>
+                    <span>
+                        ${props.price} AUD 
+                        <button onClick={(e) => {
+                            e.stopPropagation();
+                            cart.addToCart({
+                                id: props.key,
+                                title: props.title,
+                                price: props.price,
+                            });
+                        }}>
+                            Add to Cart
+                        </button>
+                    </span>
                     <p>Author: {props.author}</p>
                     <div style = {{
                         width: "100%",
                         overflowY: "auto",
-                        height: "80px"
+                        height: "100px"
                     }}>
                         <p>{props.description}</p>
                     </div>
@@ -44,7 +62,7 @@ const Product = (props) => {
                 </div>
             )
             }
-        </button>
+        </div>
     );
 }
 

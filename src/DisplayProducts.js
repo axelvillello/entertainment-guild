@@ -60,11 +60,11 @@ const DisplayProducts = () => {
 
     useEffect (() => {
             if (products.length > 0 && stock.length > 0){
-                const priced = products.map(product => {
-                    const stockItem = stock.find(p => p.ProductId === product.ID);
+                const priced = stock.map(stockItem => {
+                    const matchedProduct = products.find(p => p.ID === stockItem.ProductId);
                 return{
-                    ...product,
-                    Price: stockItem ? stockItem.Price : null,
+                    ...stockItem,
+                    ...matchedProduct,
                 };
             });
                 setPricedProducts(priced);
@@ -77,7 +77,7 @@ const DisplayProducts = () => {
             <div className="Container-flex">
                 {products.length > 0 ?
                     (
-                        pricedProducts.map((p) => (<Product key={p.ID} title={p.Name} author={p.Author} published={p.Published} description={p.Description} price={p.Price}/>))
+                        pricedProducts.map((p) => (<Product key={p.ID} title={p.Name} author={p.Author} published={p.Published} description={p.Description} price={p.Price} source={p.Source.SourceName}/>))
                     ) 
                     : 
                     (<p>{genre} are out of stock!</p>)

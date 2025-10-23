@@ -2,16 +2,24 @@ import { Box, FormControl, FormGroup, TextField, Button } from '@mui/material';
 import { useState } from "react";
 import { tryLoginUser } from './helpers/userHelpers';
 import { Link } from 'react-router-dom';
-import AddNewUser from './AddNewUser';
+import { useAuth } from './AuthProvider';
 
 const LoginUser = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [result, setResult] = useState("");
 
+    const auth = useAuth();
+
     const handleLogin = (event) => {
-        event.preventDefault(); //Prevent reloading of the page
-        tryLoginUser(username, password, setResult);
+        event.preventDefault();
+
+        if (username !== "" && password !== ""){
+            auth.loginAction({username, password});
+            return;
+        }
+        alert("Please enter a valid login.")
+        //tryLoginUser(username, password, setResult);
     }
 
     const handleUsernameChange = (event) => {
@@ -19,12 +27,7 @@ const LoginUser = () => {
     }
 
     const handlePasswordChange = (event) => {
-    
         setPassword(event.target.value);
-    }
-
-    const padding = {
-        padding: 5
     }
 
     return (

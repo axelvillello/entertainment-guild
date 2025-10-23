@@ -11,7 +11,8 @@ const tryLoginUser = (username, password, setResult) => {
     };
     //POST credentials to login
     axios.post(API_PREFIX_SHORT + "/login", { username: username, password: password }, {
-        headers: headers, withCredentials: true
+        headers: headers, 
+        withCredentials: true
     }).then((response) => { //Success
         console.log(response);
         //Change state variable here
