@@ -1,17 +1,22 @@
-import {useCart} from "./CartProvider";
-import { useState } from "react";
+import { useCart } from "./CartProvider";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const ShoppingCart = () => {
     const [cartOpen, setCartOpen] = useState(false);
     const shopCart = useCart();
+    const location = useLocation();
+
+    //close shopping cart whenever URL path changes 
+    useEffect(() => {
+        setCartOpen(true);
+    }, [location]);
 
     return (
         <span style={{position: "relative", display: "inline-block"}}>
             <button onClick={() => setCartOpen(!cartOpen)}>
                 Shopping Cart 🛒 {shopCart?.cart?.length || 0}
             </button>
-
-            <button onClick={() => shopCart.clearCart()}>Clear Cart</button>
             
             {!cartOpen && (
                 <div style={{
@@ -32,13 +37,13 @@ const ShoppingCart = () => {
                             {shopCart.cart.map((i) => (<p>{i.title} - ${i.price}</p>))}
                             <span style={{display: "flex", flexDirection: "column", gap: "8px"}}>
                                 <b>Total: ${shopCart.cart.reduce((sum, item) => sum + item.price, 0)}</b>
+                                <button onClick={() => shopCart.clearCart()}>Clear Cart</button>
                                 <button>Check Out</button>
                             </span>
                         </>
                     )}
                 </div>
-            )
-        }
+            )}
         </span>
     )
 }

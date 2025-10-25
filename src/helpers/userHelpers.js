@@ -53,7 +53,7 @@ const tryAddNewUser = async (username, password, email, name, setResult) => {
         UserName: username,
         Email: email, 
         Name: name,
-        IsAdmin: "false",
+        IsAdmin: "",
         Salt: generateSalt(),
         HashPW: ""
     }
@@ -64,7 +64,7 @@ const tryAddNewUser = async (username, password, email, name, setResult) => {
 
         console.log("Final user object:", newCredentials);
 
-        const response = await axios.post(API_PREFIX_LONG + "/User", newCredentials, 
+        const response = await axios.post(API_PREFIX_LONG + "/Patrons", newCredentials, 
             {
                 headers: headers,
                 withCredentials: true

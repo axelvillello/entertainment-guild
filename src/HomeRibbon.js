@@ -5,7 +5,7 @@ import ShoppingCart from "./ShoppingCart";
 const HomeRibbon = () => {
     const auth = useAuth();
 
-    const padding = {
+    const linkAesthetics = {
         padding: 5
     }
 
@@ -13,14 +13,15 @@ const HomeRibbon = () => {
         <span>
             {!auth.user ? 
             (
+                //parameterised navigation for reuse of displayProducts
                 <span>
-                    <Link style={padding} to="/">Home</Link>
+                    <Link style={linkAesthetics} to="/">Home</Link>
                     ||
-                    <Link style={padding} to="/displayProducts/Books">Books</Link>
-                    <Link style={padding} to="/displayProducts/Movies">Movies</Link>
-                    <Link style={padding} to="/displayProducts/Games">Games</Link>
+                    <Link style={linkAesthetics} to="/displayProducts/Books">Books</Link>
+                    <Link style={linkAesthetics} to="/displayProducts/Movies">Movies</Link>
+                    <Link style={linkAesthetics} to="/displayProducts/Games">Games</Link>
                     ||
-                    <Link style = {padding} to="/loginUser">Log In</Link>
+                    <Link style = {linkAesthetics} to="/loginUser">Log In</Link>
                     <ShoppingCart/>
                 </span>
             )
@@ -36,11 +37,11 @@ const HomeRibbon = () => {
             : 
             (
                 <span>
-                    <Link style={padding} to="/">Home</Link>
+                    <Link style={linkAesthetics} to="/">Home</Link>
                     ||
-                    <Link style={padding} to="/displayProducts/Books">Books</Link>
-                    <Link style={padding} to="/displayProducts/Movies">Movies</Link>
-                    <Link style={padding} to="/displayProducts/Games">Games</Link>
+                    <Link style={linkAesthetics} to="/displayProducts/Books">Books</Link>
+                    <Link style={linkAesthetics} to="/displayProducts/Movies">Movies</Link>
+                    <Link style={linkAesthetics} to="/displayProducts/Games">Games</Link>
                     ||
                     <button onClick={() => auth.logOut()} className="btn-submit">
                         Log Out
