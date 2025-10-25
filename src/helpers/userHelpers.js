@@ -46,15 +46,22 @@ const generateSalt = () => {
 //Add new user
 const tryAddNewUser = async (username, password, email, name, setResult) => {
     const headers = {
-        'Accept': 'application/json',
+        'Accept': 'application/json'
     };
 
     let newCredentials = {
         UserName: username,
         Email: email, 
         Name: name,
-        IsAdmin: "",
+        IsAdmin: "false",
         Salt: generateSalt(),
+        HashPW: ""
+    }
+
+    let newPatron = {
+        Email: email,
+        Name: name,
+        Salt: "",
         HashPW: ""
     }
 
@@ -64,13 +71,27 @@ const tryAddNewUser = async (username, password, email, name, setResult) => {
 
         console.log("Final user object:", newCredentials);
 
-        const response = await axios.post(API_PREFIX_LONG + "/Patrons", newCredentials, 
+        const userResponse = await axios.post(API_PREFIX_LONG + "/User", newCredentials, 
             {
                 headers: headers,
                 withCredentials: true
             });
+        
+        if (newCredentials.IsAdmin === "false"){
+            newPatron.Salt = newCredentials.Salt;
+            newPatron.HashPW = newCredentials.HashPW;
 
-        console.log("Added user successfully:", response);
+            console.log("Final patron object:", newPatron);
+
+            const patronResponse = await axios.post(API_PREFIX_LONG + "/Patrons", newPatron, 
+            {
+                headers: headers,
+                withCredentials: true
+            });
+            console.log("Added patron successfully:", patronResponse);
+        }
+
+        console.log("Added user successfully:", userResponse);
         setResult("Success");
     } 
     catch (error) 

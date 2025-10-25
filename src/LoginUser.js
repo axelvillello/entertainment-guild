@@ -1,6 +1,5 @@
 import { Box, FormControl, FormGroup, TextField, Button } from '@mui/material';
 import { useState } from "react";
-import { tryLoginUser } from './helpers/userHelpers';
 import { Link } from 'react-router-dom';
 import { useAuth } from './AuthProvider';
 

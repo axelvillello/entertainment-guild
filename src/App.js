@@ -9,6 +9,7 @@ import Featured from './Featured';
 import DisplayProducts from './DisplayProducts';
 import LoginUser from './LoginUser';
 import AddNewUser from './AddNewUser';
+import AddNewOrder from './AddNewOrder';
 import HomeRibbon from './HomeRibbon';
 import AuthProvider from './AuthProvider';
 import CartProvider from './CartProvider';
@@ -30,6 +31,7 @@ const App = () => {
             <Route path="/displayProducts/:genre" element={<DisplayProducts/>} /> 
             <Route path="/loginUser" element={<LoginUser/>} /> 
             <Route path="/addNewUser" element={<AddNewUser/>} /> 
+            <Route path="/addNewOrder" element={<AddNewOrder/>} /> 
           </Routes>
         </CartProvider>
       </AuthProvider>

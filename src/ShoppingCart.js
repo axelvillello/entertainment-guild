@@ -1,11 +1,13 @@
 import { useCart } from "./CartProvider";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ShoppingCart = () => {
     const [cartOpen, setCartOpen] = useState(false);
     const shopCart = useCart();
     const location = useLocation();
+    const navigate = useNavigate();
 
     //close shopping cart whenever URL path changes 
     useEffect(() => {
@@ -38,7 +40,7 @@ const ShoppingCart = () => {
                             <span style={{display: "flex", flexDirection: "column", gap: "8px"}}>
                                 <b>Total: ${shopCart.cart.reduce((sum, item) => sum + item.price, 0)}</b>
                                 <button onClick={() => shopCart.clearCart()}>Clear Cart</button>
-                                <button>Check Out</button>
+                                <button onClick={() => navigate("/addNewOrder")}>Check Out</button>
                             </span>
                         </>
                     )}
