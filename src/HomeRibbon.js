@@ -10,7 +10,7 @@ const HomeRibbon = () => {
     }
 
     return (
-        <span>
+        <div>
             {!auth.user ? 
             (
                 //parameterised navigation for reuse of displayProducts
@@ -50,7 +50,7 @@ const HomeRibbon = () => {
                 </span>
             )}
 
-        </span>
+        </div>
     )
 }
 

@@ -5,7 +5,7 @@ import './App.css';
 import {
   BrowserRouter as Router, Routes, Route, Link
 } from 'react-router-dom';
-import Featured from './Featured';
+import Search from './Search';
 import DisplayProducts from './DisplayProducts';
 import LoginUser from './LoginUser';
 import AddNewUser from './AddNewUser';
@@ -21,13 +21,18 @@ const App = () => {
     <Router>
       <AuthProvider>
         <CartProvider>
-          <div>
+          <div style={{
+            display: "flex", 
+            justifyContent: "center", 
+            alignItems: "center",
+            flexDirection: "column"
+          }}>
             <h1>ENTERTAINMENT GUILD</h1>
             <HomeRibbon />
           </div> 
         
           <Routes>
-            <Route path="/" element={<Featured/>} />
+            <Route path="/" element={<Search/>} />
             <Route path="/displayProducts/:genre" element={<DisplayProducts/>} /> 
             <Route path="/loginUser" element={<LoginUser/>} /> 
             <Route path="/addNewUser" element={<AddNewUser/>} /> 

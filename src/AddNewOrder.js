@@ -45,7 +45,12 @@ const AddNewOrder = () => {
     }
 
     return (
-        <span>
+        <span style={{
+            display: "flex", 
+            justifyContent: "center", 
+            alignItems: "center",
+            flexDirection: "column"
+          }}>
             {nextReady ? (
                 <Box display="flex" justifyContent="center">
                     <Box
@@ -88,8 +93,8 @@ const AddNewOrder = () => {
             )
             :
             (
-                <div>
-                    <h3>Shipping Details</h3>
+                <div style={{textAlign: "left"}}>
+                    <h1>Order Confirmation</h1>
                     <p>Name: {auth.user.Name}</p>
                     <p>Email: {auth.user.Email}</p>
                     <p>Street Address: {streetAddress}</p>

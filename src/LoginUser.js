@@ -57,7 +57,8 @@ const LoginUser = () => {
                 <div><Link to="/addNewUser">No account? Sign up here!</Link></div>
             </form>
         </Box >
-</Box >);
+    </Box >
+    );
 }
 
 export default LoginUser;

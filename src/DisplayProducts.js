@@ -14,9 +14,11 @@ const DisplayProducts = () => {
     const [genreProducts, setGenreProducts] = useState([]);
     const [stock, setStock] = useState([]);
     const [pricedProducts, setPricedProducts] = useState([]);
-
+    const [loading, setLoading] = useState("");
+    
     //GET request for all listed genres
     useEffect (() => { 
+        setLoading(true);
         const promise = axios.get("http://localhost:3001/api/inft3050/Genre"); 
         promise.then((response) => { 
             console.log(response); 
@@ -68,11 +70,17 @@ const DisplayProducts = () => {
                 };
             });
                 setPricedProducts(priced);
+                setLoading(false)
             }
     }, [stock, products])
 
     return (
-        <div>
+        <div style={{
+            display: "flex", 
+            justifyContent: "center", 
+            alignItems: "center",
+            flexDirection: "column"
+        }}>
             <h1>{genre}</h1>
             <div className="Container-flex">
                 {products.length > 0 ?
