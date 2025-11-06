@@ -1,21 +1,24 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Product from "./Product";
+import AdminProduct from "./admin/AdminProduct";
 import { useLoading } from "./providers/LoadingProvider";
 import { useParams } from "react-router-dom";
 import Search from "./Search";
+import { useAuth } from "./providers/AuthProvider";
 
 const SearchProducts = () => {
     const [products, setProducts] = useState([]);
     const [stock, setStock] = useState([]);
     const [pricedProducts, setPricedProducts] = useState([]);
     const loading = useLoading();
+    const auth = useAuth();
     const {searchTerm} = useParams();
 
     //GET request for all products 
     useEffect (() => {
         loading.setLoadingStatus(true);
-        const promise = axios.get("http://localhost:3001/api/inft3050/Product");
+        const promise = axios.get("http://localhost:3001/api/inft3050/Product?page=1&pageSize=1000");
         promise.then((response) => {
             console.log(response);
             const loadedProducts = response.data.list;
@@ -31,7 +34,7 @@ const SearchProducts = () => {
 
     //GET request for all stock 
     useEffect (() => {
-        const promise = axios.get("http://localhost:3001/api/inft3050/Stocktake");
+        const promise = axios.get("http://localhost:3001/api/inft3050/Stocktake?page=1&pageSize=1000");
         promise.then((response) => {
             console.log(response);
             const loadedStock = response.data.list;
@@ -77,20 +80,51 @@ const SearchProducts = () => {
                 justifyContent: "center", 
                 alignItems: "center",
                 flexDirection: "column"
+                
             }
         }>
             <Search/>
-            <h1>Search Results</h1>
-            <div className="Container-flex">
-                {   loading.loadingProg ? 
+            <h1 display="flex" justifyContent="center" alignItems="center">{auth.user?.IsAdmin ? "Product Search Results" : "Search Results"}</h1>
+            <div 
+                className="Container-flex">
+                {loading.loadingProg ? 
                     (
                         <img className="Loading-wheel" alt="Loading..." src="/images/loading.png"/>
                     )
                     :
                     products.length > 0 ?
                     (
-                        pricedProducts.map((p) => (<Product key={p.stocktakeId} id ={p.stocktakeId} title={p.Name} author={p.Author} published={p.Published} description={p.Description} price={p.Price} source={p.Source.SourceName}/>))
-                    )
+                        pricedProducts.map((p) => { 
+                            if (auth.user?.IsAdmin) {
+                                return (
+                                    <AdminProduct 
+                                        key={p.stocktakeId} 
+                                        id ={p.stocktakeId} 
+                                        title={p.Name} 
+                                        author={p.Author} 
+                                        published={p.Published} 
+                                        description={p.Description} 
+                                        price={p.Price} 
+                                        source={p.Source.SourceName}
+                                    />
+                                );
+                            }
+                            else {
+                                return (
+                                    <Product 
+                                        key={p.stocktakeId} 
+                                        id ={p.stocktakeId} 
+                                        title={p.Name} 
+                                        author={p.Author} 
+                                        published={p.Published} 
+                                        description={p.Description} 
+                                        price={p.Price} 
+                                        source={p.Source.SourceName}
+                                    />
+                                );
+                            }
+                        }
+                    ))
                     : 
                     (
                         <p>No results</p>

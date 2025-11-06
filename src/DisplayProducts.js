@@ -99,7 +99,12 @@ const DisplayProducts = () => {
             flexDirection: "column"
         }}>
             <h1 className="Flyin-anim">{genre}</h1>
-            <div className="Container-flex">
+            <div 
+                className="Container-flex"
+                style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(4, 1fr)", 
+                }}>
                 {   loading.loadingProg ? 
                     (
                         <img className="Loading-wheel" alt="Loading..." src="/images/loading.png"/>

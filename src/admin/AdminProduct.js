@@ -1,26 +1,39 @@
 //Defines a component that defines a collection of props 
 //generically for many different types of products
 //WRITTEN BY: Axel Ello
-import { useState } from "react";
-import { useCart } from "./providers/CartProvider";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { tryDeleteProduct } from "../helpers/productHelpers";
+import { useSnackbar } from "../providers/SnackbarProvider";
 
-const Product = (props) => {
+const AdminProduct = (props) => {
     const [enlarged, setEnlarged] = useState(false);
-    const cart = useCart();
+    const [result, setResult] = useState("");
+    const navigate = useNavigate();
+    const sbar = useSnackbar();
+
+    async function handleDeleteProduct() {
+        await tryDeleteProduct(props.id, setResult);
+        setTimeout(() => navigate(0), 1000);
+    }
+
+    useEffect(() => {
+            if (result) sbar.setSnackMsg(result, 'info');
+        }, [result]);
 
     return (
         <div
-            className="Product-icons"
+            
             onClick={() => setEnlarged(!enlarged)}
             onMouseLeave={() => {if (enlarged) setEnlarged(!enlarged)}}
             style={{
-                height: enlarged? "400px" : "200px",
-                width: enlarged? "400px" : "200px",
+                height: enlarged? "400px" : "100px",
+                width: enlarged? "800px" : "800px",
                 display: "flex",
-                justifyContent: "center",
+                justifyContent: "left",
                 alignItems: "center",
                 overflow: "hidden",
-                margin: "20px",
+                margin: "1px",
                 padding: "10px",
                 transition: "all 0.3s",
                 backgroundColor: "#ADD8E6",
@@ -30,9 +43,7 @@ const Product = (props) => {
             {!enlarged?
             (
                 <div>
-                    <h2>{props.title}</h2>
-                    <h3>{props.source}</h3>
-                    <p>${props.price} AUD </p>
+                    <h2>{props.title} ({props.source})</h2>
                 </div>
             )
             :
@@ -42,17 +53,6 @@ const Product = (props) => {
                     <h3>{props.source}</h3>
                     <span>
                         ${props.price} AUD 
-                        <button onClick={(e) => {
-                            e.stopPropagation();
-                            cart.addToCart({
-                                id: props.id,
-                                title: props.title,
-                                price: props.price,
-                                quantity: 1,
-                            });
-                        }}>
-                            Add to Cart
-                        </button>
                     </span>
                     <p>Author: {props.author}</p>
                     <div style = {{
@@ -63,6 +63,9 @@ const Product = (props) => {
                         <p>{props.description}</p>
                     </div>
                     <p>Published: {props.published}</p>
+                    <button onClick={(e) => {handleDeleteProduct()}}>
+                        Delete
+                    </button>
                 </div>
             )
             }
@@ -70,4 +73,4 @@ const Product = (props) => {
     );
 }
 
-export default Product;
+export default AdminProduct;

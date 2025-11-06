@@ -4,24 +4,6 @@ const API_PREFIX_SHORT = "http://localhost:3001";
 const API_PREFIX_LONG = API_PREFIX_SHORT + "/api/inft3050";
 
 /* Axios database calls */
-//Login user
-const tryLoginUser = (username, password, setResult) => {
-    const headers = {
-        'Accept': 'application/json',
-    };
-    //POST credentials to login
-    axios.post(API_PREFIX_SHORT + "/login", { username: username, password: password }, {
-        headers: headers, 
-        withCredentials: true
-    }).then((response) => { //Success
-        console.log(response);
-        //Change state variable here
-        setResult("Success!");
-    }).catch((error) => {
-        console.log(error);
-        setResult("Error :(");
-    });
-}
 
 //SHA256 password hashing
 async function sha256(message) {
@@ -102,4 +84,23 @@ const tryAddNewUser = async (username, password, email, name, setResult) => {
     }
 }
 
-export { tryAddNewUser, tryLoginUser };
+const tryDeleteUser = async (userId, setResult) => {
+    try 
+    {
+        const response = await axios.delete(`http://localhost:3001/api/inft3050/User/${userId}`, {
+            headers: {
+                    "Accept": "application/json",
+                },
+                withCredentials: true,
+        });
+        console.log("User deleted:");
+        setResult("Successfully deleted user");
+    }
+    catch (error)
+    {
+        console.log("Error deleting user:", error);
+        setResult("Failed to delete user");
+    }
+}
+
+export { tryAddNewUser, tryDeleteUser };

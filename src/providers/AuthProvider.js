@@ -20,10 +20,10 @@ const AuthProvider = ({children}) => {
             const response = await axios.post("http://localhost:3001/login", 
                 {username: data.username, password: data.password}, 
                 {
-                headers: {
-                    "Accept": "application/json",
-                },
-                withCredentials: true,
+                    headers: {
+                        "Accept": "application/json",
+                    },
+                    withCredentials: true,
             });
             if (response.data) {
                 const loggedInUser = response.data;
