@@ -36,11 +36,55 @@
   max-width: 100%;
 }
 
-@keyframes App-logo-spin {
+.Site-title {
+  animation: drop-in 1000ms;
+}
+
+.Flyin-anim {
+  animation: fly-in 1000ms;
+}
+
+.Home-ribbon {
+  animation: drop-in 2000ms;
+}
+
+.Loading-wheel {
+  height: 80px;
+  width: 80px;
+  animation: spin 1000ms;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes drop-in {
   from {
-    transform: rotate(0deg);
+    transform: translateY(-100%);
+    opacity: 0;
   }
   to {
-    transform: rotate(360deg);
+    transform:
+      translateY(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes fly-in {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform:
+      translateX(0%);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
   }
 }

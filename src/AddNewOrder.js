@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import { tryAddNewOrder } from './helpers/orderHelper';
 import { useLocation } from 'react-router-dom';
 import LoginUser from './LoginUser';
-import { useAuth } from "./AuthProvider";
-import { useCart } from './CartProvider';
+import { useAuth } from "./providers/AuthProvider";
+import { useCart } from './providers/CartProvider';
+import { useSnackbar } from './providers/SnackbarProvider';
+import { useNavigate } from 'react-router-dom';
 
 const AddNewOrder = () => {
     const [streetAddress, setStreetAddress] = useState("");
@@ -14,17 +16,44 @@ const AddNewOrder = () => {
     const [result, setResult] = useState("");
     const [nextReady, setNextReady] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
     const auth = useAuth();
     const shopCart = useCart();
+    const snackbar = useSnackbar();
 
     useEffect(() => {
             setNextReady(true);
             console.table(auth.user)
         }, [location]);
+    
+    useEffect(() => {
+        if (result === "Order created successfully!") {
+            snackbar.setSnackMsg(result, "success");
+            shopCart.clearCart();
+            navigate("/");
+        }
+        else if (result === "Error creating order"){
+            snackbar.setSnackMsg(result, "error");
+        }
+        else if (result) {
+            snackbar.setSnackMsg(result, "info");
+        }
+    }, [result]);
 
     
     function handleAddOrder() {
-        tryAddNewOrder(auth.user.UserID, auth.user.Email, streetAddress, postCode, suburb, state, auth, auth.user.Salt, auth.user.HashPW, auth.user.Name);
+        tryAddNewOrder(
+            auth.user.UserID, 
+            auth.user.Email, 
+            streetAddress, 
+            postCode, 
+            suburb, 
+            state, 
+            auth.user.Salt, 
+            auth.user.HashPW, 
+            auth.user.Name,
+            shopCart.cart,
+            setResult);
     }
 
     
@@ -102,10 +131,10 @@ const AddNewOrder = () => {
                     <p>State: {state}</p>
                     <p>Post Code: {postCode}</p>
                     <h3>Order Content</h3>
-                    {shopCart.cart.map((i) => (<p>${i.price} - {i.title}</p>))}
-                            <span style={{display: "flex", flexDirection: "column", gap: "8px"}}>
-                                <b>Total: ${shopCart.cart.reduce((sum, item) => sum + item.price, 0)}</b>
-                            </span>
+                    {shopCart.cart.map((i) => (<p>${(i.price*i.quantity).toFixed(2)} - {i.title}</p>))}
+                    <span style={{display: "flex", flexDirection: "column", gap: "8px"}}>
+                        <b>Total: ${shopCart.cart.reduce((sum, item) => sum + (item.price*item.quantity), 0)}</b>
+                    </span>
                     <button onClick={() => handleAddOrder()}>Confirm Order</button>
                 </div>
             )

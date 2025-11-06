@@ -1,5 +1,6 @@
 import {useContext, createContext, useState} from "react";
 import { useNavigate } from "react-router-dom";
+import { useSnackbar } from './SnackbarProvider';
 import axios from "axios";
 
 const AuthContext = createContext();
@@ -9,8 +10,10 @@ const AuthProvider = ({children}) => {
         const stored = localStorage.getItem("site");
         return stored ? JSON.parse(stored) : null;  // parse JSON
     });
-    //const [token, setToken] = useState(localStorage.getItem("site") || "");
+
+    const [token, setToken] = useState(localStorage.getItem("site") || "");
     const navigate = useNavigate();
+    const sbar = useSnackbar();
 
     const loginAction = async (data) => {
         try {
@@ -35,7 +38,8 @@ const AuthProvider = ({children}) => {
                 });
 
                 setUser(userDetailsResponse.data);
-                //setToken(response.data.token);
+                sbar.setSnackMsg(`Welcome, ${userDetailsResponse.data.Name}!`, 'success');
+                setToken(response.data.token);
                 localStorage.setItem("site", JSON.stringify(userDetailsResponse.data));
                 navigate("/");
                 return;
@@ -49,7 +53,8 @@ const AuthProvider = ({children}) => {
 
     const logOut = () => {
         setUser(null);
-        //setToken("");
+        sbar.setSnackMsg('You have logged out!', 'success');
+        setToken("");
         localStorage.removeItem("site");
         navigate("/");
     };

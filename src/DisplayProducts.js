@@ -6,19 +6,21 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Product from "./Product";
+import { useLoading } from "./providers/LoadingProvider";
 
 const DisplayProducts = () => {
 
-    const {genre} = useParams();
     const [products, setProducts] = useState([]);
     const [genreProducts, setGenreProducts] = useState([]);
     const [stock, setStock] = useState([]);
     const [pricedProducts, setPricedProducts] = useState([]);
-    const [loading, setLoading] = useState("");
     
+    const loading = useLoading();
+    const {genre} = useParams();
+
     //GET request for all listed genres
     useEffect (() => { 
-        setLoading(true);
+        loading.setLoadingStatus(true);
         const promise = axios.get("http://localhost:3001/api/inft3050/Genre"); 
         promise.then((response) => { 
             console.log(response); 
@@ -56,22 +58,37 @@ const DisplayProducts = () => {
         promise.then((response) => {
             console.log(response);
             const loadedStock = response.data.list;
-            setStock(loadedStock);
+            if (loadedStock) {    
+                setStock(loadedStock);
+            }
+            else {
+                setStock([]);
+            }
         });
     }, [products])
 
     useEffect (() => {
-            if (products.length > 0 && stock.length > 0){
-                const priced = stock.map(stockItem => {
-                    const matchedProduct = products.find(p => p.ID === stockItem.ProductId);
-                return{
+        if (products.length > 0 && stock.length > 0){
+            const priced = stock.map(stockItem => {
+                const matchedProduct = products.find(p => p.ID === stockItem.ProductId);
+                return {
                     ...stockItem,
+                    stocktakeId: stockItem.ItemId,
                     ...matchedProduct,
                 };
             });
+            
+            if (priced) {    
                 setPricedProducts(priced);
-                setLoading(false)
             }
+            else {
+                setPricedProducts([]);
+            }
+            loading.setLoadingStatus(false);
+        }
+        else {
+            loading.setLoadingStatus(false);    
+        }
     }, [stock, products])
 
     return (
@@ -81,14 +98,21 @@ const DisplayProducts = () => {
             alignItems: "center",
             flexDirection: "column"
         }}>
-            <h1>{genre}</h1>
+            <h1 className="Flyin-anim">{genre}</h1>
             <div className="Container-flex">
-                {products.length > 0 ?
+                {   loading.loadingProg ? 
                     (
-                        pricedProducts.map((p) => (<Product key={p.ID} title={p.Name} author={p.Author} published={p.Published} description={p.Description} price={p.Price} source={p.Source.SourceName}/>))
-                    ) 
+                        <img className="Loading-wheel" alt="Loading..." src="/images/loading.png"/>
+                    )
+                    :
+                    products.length > 0 ?
+                    (
+                        pricedProducts.map((p) => (<Product key={p.stocktakeId} id ={p.stocktakeId} title={p.Name} author={p.Author} published={p.Published} description={p.Description} price={p.Price} source={p.Source.SourceName}/>))
+                    )
                     : 
-                    (<p>{genre} are out of stock!</p>)
+                    (
+                        <p className="Flyin-anim">{genre} are out of stock!</p>
+                    )
 
                 }
             </div>

@@ -2,7 +2,7 @@
 //generically for many different types of products
 //WRITTEN BY: Axel Ello
 import { useState } from "react";
-import { useCart } from "./CartProvider";
+import { useCart } from "./providers/CartProvider";
 
 const Product = (props) => {
     const [enlarged, setEnlarged] = useState(false);
@@ -10,6 +10,7 @@ const Product = (props) => {
 
     return (
         <div
+            className="Flyin-anim"
             onClick={() => setEnlarged(!enlarged)}
             style={{
                 height: enlarged? "400px" : "200px",
@@ -42,9 +43,10 @@ const Product = (props) => {
                         <button onClick={(e) => {
                             e.stopPropagation();
                             cart.addToCart({
-                                id: props.key,
+                                id: props.id,
                                 title: props.title,
                                 price: props.price,
+                                quantity: 1,
                             });
                         }}>
                             Add to Cart

@@ -1,9 +1,10 @@
 import axios from 'axios';
+
 //API endpoints
 const API_PREFIX_SHORT = "http://localhost:3001";
 const API_PREFIX_LONG = API_PREFIX_SHORT + "/api/inft3050";
 
-const tryAddNewOrder = async (userID, email, streetAddress, postCode, suburb, state, salt, hash, name) => {
+const tryAddNewOrder = async (userID, email, streetAddress, postCode, suburb, state, salt, hash, name, cart, setResult) => {
     const headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -84,14 +85,35 @@ const tryAddNewOrder = async (userID, email, streetAddress, postCode, suburb, st
             headers: headers,
             withCredentials: true
         });
-        console.log("Added order successfully:", orderResponse);    
+        console.log("Added order successfully:", orderResponse);
+
+        const orderID = orderResponse.data.OrderID;    
         
-        //setResult("Success");
+        console.log("Cart items before order:", cart);
+
+        for (const item of cart) {
+            const productInOrder = {
+                OrderId: orderID,
+                ProduktId: item.id,
+                Quantity: item.quantity,
+            };
+
+            console.log("ProductInOrder Object:", productInOrder);
+
+            await axios.post(API_PREFIX_LONG + "/ProductsInOrders", productInOrder, 
+            { 
+                headers: headers, 
+                withCredentials: true 
+            });
+
+            console.log("Added product to order:", productInOrder);
+        }
+        setResult("Order created successfully!");
     } 
     catch (error) 
     {
         console.error("Error posting data:", error);
-        //setResult("Fail");
+        setResult("Error creating order");
     }
 }
 export { tryAddNewOrder};

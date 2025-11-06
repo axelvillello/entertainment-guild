@@ -1,7 +1,7 @@
 import { Box, FormControl, FormGroup, TextField, Button } from '@mui/material';
 import { useState } from "react";
 import { Link } from 'react-router-dom';
-import { useAuth } from './AuthProvider';
+import { useAuth } from './providers/AuthProvider';
 
 const LoginUser = () => {
     const [username, setUsername] = useState("");
@@ -53,7 +53,6 @@ const LoginUser = () => {
                 <Box >
                     <Button type="submit" variant="outlined">Login</Button>
                 </Box>
-                <TextField id="result" disabled label="Login result" value={result} />
                 <div><Link to="/addNewUser">No account? Sign up here!</Link></div>
             </form>
         </Box >
