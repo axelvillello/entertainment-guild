@@ -1,13 +1,16 @@
+//Component definition for log in portal
+//WRITTEN BY: Axel Ello
+
 import { Box, FormControl, FormGroup, TextField, Button } from '@mui/material';
 import { useState } from "react";
 import { Link } from 'react-router-dom';
 import { useAuth } from './providers/AuthProvider';
+import { useSnackbar } from './providers/SnackbarProvider';
 
 const LoginUser = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [result, setResult] = useState("");
-
+    const sbar = useSnackbar();
     const auth = useAuth();
 
     const handleLogin = (event) => {
@@ -17,8 +20,7 @@ const LoginUser = () => {
             auth.loginAction({username, password});
             return;
         }
-        alert("Please enter a valid login.")
-        //tryLoginUser(username, password, setResult);
+        sbar.setSnackMsg('Please enter valid login details', 'warning');
     }
 
     const handleUsernameChange = (event) => {
@@ -32,28 +34,28 @@ const LoginUser = () => {
     return (
     <Box display="flex" justifyContent="center">
         <Box
-            width={300}
-            alignItems="left"
+            width={400}
+            textAlign="center"
             sx={{
                 '.MuiTextField-root, .MuiFormControl-root': { m: 1, ml: 0 },
                 '.MuiButton-root': { m: 1 },
             }}>
-            <h1>Log In</h1>
+            <h1 className="Page-headings">Log In</h1>
             <form method="post" onSubmit={handleLogin}>
                 <FormControl>
                     <FormGroup>
                     <TextField id="username-field" label="Username" variant="outlined"
-                    value={username} onChange={handleUsernameChange} />
+                        value={username} onChange={handleUsernameChange} fullWidth/>
                     </FormGroup>
                     <FormGroup>
                     <TextField id="password-field" label="Password" variant="outlined"
-                    type="password" value={password} onChange={handlePasswordChange} />
+                        type="password" value={password} onChange={handlePasswordChange} fullWidth />
                     </FormGroup>
                 </FormControl>
-                <Box >
+                <div><Link to="/addNewUser">No account? Sign up here!</Link></div>
+                <Box style={{padding: "10px", marginBottom: "20px"}}>
                     <Button type="submit" variant="outlined">Login</Button>
                 </Box>
-                <div><Link to="/addNewUser">No account? Sign up here!</Link></div>
             </form>
         </Box >
     </Box >

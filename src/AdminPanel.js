@@ -1,3 +1,5 @@
+//Depreciated component
+
 import { useAuth } from "./providers/AuthProvider";
 import { useState, useEffect } from "react";
 import { useSnackbar } from "./providers/SnackbarProvider";

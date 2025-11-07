@@ -1,3 +1,6 @@
+//Provider component for loading icon
+//WRITTEN BY: Axel Ello
+
 import {useContext, createContext, useState} from "react";
 
 const LoadingContext = createContext();

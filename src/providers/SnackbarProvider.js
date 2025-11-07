@@ -1,3 +1,6 @@
+//Provider component for snackbar notifications
+//WRITTEN BY: Axel Ello
+
 import {useContext, createContext, useState} from "react";
 import { Snackbar } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";

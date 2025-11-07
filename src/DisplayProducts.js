@@ -38,18 +38,32 @@ const DisplayProducts = () => {
 
     //GET request for all products 
     useEffect (() => {
-        const promise = axios.get("http://localhost:3001/api/inft3050/Product");
-        promise.then((response) => {
-            console.log(response);
-            const loadedProducts = response.data.list;
-            const filteredProducts = loadedProducts.filter((lp) => genreProducts.includes(lp.ID));  //only include products contained in the genre via ID
-            if (filteredProducts) {    
-                setProducts(filteredProducts);
+        const fetchAllProducts = async () => {
+
+            //Attempt at cycling through pages 
+            let allProducts = [];
+            let currentPage = 1;
+            let pageSize = 25;
+            //while (true){
+                const productResponse = await axios.get(`http://localhost:3001/api/inft3050/Product?page=${currentPage}&limit=${pageSize}`);
+                console.log(productResponse);
+                const loadedProducts = productResponse.data.list;
+                const filteredProducts = loadedProducts.filter((lp) => genreProducts.includes(lp.ID));  //only include products contained in the genre via ID
+                allProducts = allProducts.concat(filteredProducts);
+                //if (loadedProducts.length < pageSize) break; 
+                //currentPage++;
+            //}
+            
+            if (allProducts) {    
+                setProducts(allProducts);
             }
             else {
                 setProducts([]);
             }
-        });
+        }
+
+        fetchAllProducts();
+
     }, [genreProducts])
 
     //GET request for all stock 
@@ -96,28 +110,30 @@ const DisplayProducts = () => {
             display: "flex", 
             justifyContent: "center", 
             alignItems: "center",
+            textAlign: "center",
             flexDirection: "column"
         }}>
-            <h1 className="Flyin-anim">{genre}</h1>
+            <h1 className="Page-headings">{genre}</h1>
             <div 
                 className="Container-flex"
                 style={{
                     display: "grid",
                     gridTemplateColumns: "repeat(4, 1fr)", 
                 }}>
-                {   loading.loadingProg ? 
-                    (
-                        <img className="Loading-wheel" alt="Loading..." src="/images/loading.png"/>
-                    )
-                    :
-                    products.length > 0 ?
-                    (
-                        pricedProducts.map((p) => (<Product key={p.stocktakeId} id ={p.stocktakeId} title={p.Name} author={p.Author} published={p.Published} description={p.Description} price={p.Price} source={p.Source.SourceName}/>))
-                    )
-                    : 
-                    (
-                        <p className="Flyin-anim">{genre} are out of stock!</p>
-                    )
+                    {/*Creates a loading wheel while in loading state*/}
+                {loading.loadingProg ? 
+                (
+                    <img className="Loading-wheel" alt="Loading..." src="/images/loading.png"/>
+                )
+                :
+                products.length > 0 ?
+                (
+                    pricedProducts.map((p) => (<Product key={p.stocktakeId} id ={p.stocktakeId} title={p.Name} author={p.Author} published={p.Published} description={p.Description} price={p.Price} source={p.Source.SourceName}/>))
+                )
+                : 
+                (
+                    <p className="Flyin-anim">{genre} are out of stock!</p>
+                )
 
                 }
             </div>

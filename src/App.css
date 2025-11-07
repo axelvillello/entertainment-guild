@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  padding-bottom: 50px;
 }
 
 .App-header {
@@ -27,7 +28,8 @@
 
 .Site-title {
   animation: drop-in 1000ms;
-  font-size: 40px;
+  font-size: 60px;
+  color: #DC143C;
 }
 
 .Shop-cart {
@@ -92,6 +94,10 @@
   animation: spin 1000ms;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
+}
+
+.Page-headings {
+  font-size: 50px;
 }
 
 @keyframes drop-in {

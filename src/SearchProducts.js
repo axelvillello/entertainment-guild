@@ -1,3 +1,6 @@
+//Component definition for rendering product search results
+//WRITTEN BY: Axel Ello
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Product from "./Product";
@@ -15,7 +18,8 @@ const SearchProducts = () => {
     const auth = useAuth();
     const {searchTerm} = useParams();
 
-    //GET request for all products 
+    //GET request for all products
+    //Attempted retrieval of larger pages
     useEffect (() => {
         loading.setLoadingStatus(true);
         const promise = axios.get("http://localhost:3001/api/inft3050/Product?page=1&pageSize=1000");
@@ -83,8 +87,9 @@ const SearchProducts = () => {
                 
             }
         }>
-            <Search/>
-            <h1 display="flex" justifyContent="center" alignItems="center">{auth.user?.IsAdmin ? "Product Search Results" : "Search Results"}</h1>
+            {/*Renders search components at the top of page for faster searches */}
+            <Search/> 
+            <h1 className="Page-headings" display="flex" justifyContent="center" alignItems="center">{auth.user?.IsAdmin ? "Product Search Results" : "Search Results"}</h1>
             <div 
                 className="Container-flex">
                 {loading.loadingProg ? 
@@ -106,6 +111,7 @@ const SearchProducts = () => {
                                         description={p.Description} 
                                         price={p.Price} 
                                         source={p.Source.SourceName}
+                                        sourceId={p.Source.Sourceid}
                                     />
                                 );
                             }

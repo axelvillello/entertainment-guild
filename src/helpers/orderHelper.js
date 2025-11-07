@@ -1,3 +1,6 @@
+//Defines a helper for handling order
+//WRITTEN BY: Axel Ello
+
 import axios from 'axios';
 
 //API endpoints
@@ -18,7 +21,7 @@ const tryAddNewOrder = async (userID, email, streetAddress, postCode, suburb, st
         PostCode: postCode, 
         Suburb: suburb,
         State: state,
-        CardNumber: null,
+        CardNumber: null,   //unused fields, required for POST requests
         CardOwner: null,
         Expiry: null,
         CVV: null,
@@ -40,6 +43,7 @@ const tryAddNewOrder = async (userID, email, streetAddress, postCode, suburb, st
         HashPW: hash
     }
 
+    //GET request for patrons in order to check if a user is a patron
     try {
         const response = await axios.get("http://localhost:3001/api/inft3050/Patrons", {
             headers: { "Accept": "application/json" },
@@ -47,8 +51,9 @@ const tryAddNewOrder = async (userID, email, streetAddress, postCode, suburb, st
         });
         const patrons = response.data.list;
 
-        const patron = patrons.find(p => p.Email === newPatron.Email);
+        const patron = patrons.find(p => p.Email === newPatron.Email);  //Finds patron matching customer email
 
+        //Create an appropriate patron if missing
         if (!patron) {
             console.log("No patron found with email:", newPatron.Email);
 
@@ -67,11 +72,15 @@ const tryAddNewOrder = async (userID, email, streetAddress, postCode, suburb, st
         
         
         console.log("Final order object:", newTO);
+
+        //POST request for the TO table for joining
+        //Disclaimer: Incorrectly recreates TO table for every customer
         const TOResponse = await axios.post(API_PREFIX_LONG + "/TO", newTO, 
         {
             headers: headers,
             withCredentials: true
         });
+
         console.log("Added to TO table successfully:", TOResponse);
         
         const customerID = TOResponse.data.CustomerID;
@@ -80,6 +89,7 @@ const tryAddNewOrder = async (userID, email, streetAddress, postCode, suburb, st
 
         console.log("Final order object:", newOrder);
 
+        //POST request for specific customer order
         const orderResponse = await axios.post(API_PREFIX_LONG + "/Orders", newOrder, 
         {
             headers: headers,
@@ -91,6 +101,7 @@ const tryAddNewOrder = async (userID, email, streetAddress, postCode, suburb, st
         
         console.log("Cart items before order:", cart);
 
+        //Loops through cart and creates a ProductInOrders entry
         for (const item of cart) {
             const productInOrder = {
                 OrderId: orderID,

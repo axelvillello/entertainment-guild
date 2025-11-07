@@ -1,3 +1,6 @@
+//Provider component for logged in users
+//WRITTEN BY: Axel Ello
+
 import {useContext, createContext, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from './SnackbarProvider';

@@ -1,3 +1,6 @@
+//Helper for handling user accounts in the database
+//WRITTEN BY: Axel Ello
+
 import axios from 'axios'
 //API endpoints
 const API_PREFIX_SHORT = "http://localhost:3001";
@@ -26,7 +29,7 @@ const generateSalt = () => {
 }
 
 //Add new user
-const tryAddNewUser = async (username, password, email, name, setResult) => {
+const tryAddNewUser = async (username, password, email, name, adminStatus, setResult) => {
     const headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -36,7 +39,7 @@ const tryAddNewUser = async (username, password, email, name, setResult) => {
         UserName: username,
         Email: email, 
         Name: name,
-        IsAdmin: false,
+        IsAdmin: adminStatus,
         Salt: generateSalt(),
         HashPW: ""
     }
@@ -87,6 +90,7 @@ const tryAddNewUser = async (username, password, email, name, setResult) => {
 const tryDeleteUser = async (userId, setResult) => {
     try 
     {
+        //DELETE request for users based on ID
         const response = await axios.delete(`http://localhost:3001/api/inft3050/User/${userId}`, {
             headers: {
                     "Accept": "application/json",
@@ -103,4 +107,45 @@ const tryDeleteUser = async (userId, setResult) => {
     }
 }
 
-export { tryAddNewUser, tryDeleteUser };
+const tryEditUser = async (id, username, password, email, name, isAdmin, setResult, pwHash, salt) => {
+
+    let editCredentials = {
+        UserName: username,
+        Email: email, 
+        Name: name,
+        IsAdmin: isAdmin,
+        Salt: salt,
+        HashPW: pwHash
+    }
+
+    try 
+    {
+        //If a new password was provided, rehash
+        if (password !== "")
+        {
+            editCredentials.Salt = generateSalt();
+            const hashedPW = await sha256(editCredentials.Salt + password);
+            editCredentials.HashPW = hashedPW;
+        }
+
+        console.log("Attempting to edit user object:", editCredentials);
+
+        //PUT request for the specified user
+        const response = await axios.put(`http://localhost:3001/api/inft3050/User/${id}`, editCredentials, {
+            headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+                withCredentials: true,
+        });
+        console.log("User updated:", response.data);
+        setResult("Successfully updated user");
+    }
+    catch (error)
+    {
+        console.log("Error updating user:", error);
+        setResult("Failed to update user");
+    }
+}
+
+export { tryAddNewUser, tryDeleteUser, tryEditUser };

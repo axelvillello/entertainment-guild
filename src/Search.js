@@ -1,8 +1,11 @@
+//Component definition that acts as a home page
+//Enables users to search for products (additional user search for admins)
+//WRITTEN BY: Axel Ello
+
 import { Box, FormControl, FormGroup, TextField, Button } from '@mui/material';
 import { useState } from 'react';
 import { useAuth } from './providers/AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import AdminPanel from './AdminPanel';
 
 const Search = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -25,10 +28,10 @@ const Search = () => {
         }
         else {
             navigate("/searchProducts/" + searchTerm.trim());
-    
         }
     }
 
+    //Search navigation for user searching via admin panel
     const handleUserSearch = (event) => {
         event.preventDefault();
         if (!searchTermUser) {
@@ -36,13 +39,13 @@ const Search = () => {
         }
         else {
             navigate("/searchUsers/" + searchTermUser.trim());
-    
         }
     }
 
     return (
         <div>
             {
+                //Conditionally renders two search bars for admins
             auth.user?.IsAdmin === true ?
             (
                 <>

@@ -1,4 +1,4 @@
-//Main application functionality, including navigation
+//Main application
 //WRITTEN BY: Axel Ello
 
 import './App.css';
@@ -18,8 +18,11 @@ import SnackbarProvider from './providers/SnackbarProvider';
 import LoadingProvider from './providers/LoadingProvider';
 import SearchProducts from './SearchProducts';
 import SearchUsers from './SearchUsers';
+import AddNewProduct from './admin/AddNewProduct';
 import { useAuth } from './providers/AuthProvider';
-
+import EditUser from './EditUser';
+import EditProduct from './EditProduct';
+import AccountPage from './AccountPage';
 
 const App = () => {
   const auth = useAuth();
@@ -46,9 +49,13 @@ const App = () => {
                 <Route path="/displayProducts/:genre" element={<DisplayProducts/>} /> 
                 <Route path="/searchProducts/:searchTerm" element={<SearchProducts/>} /> 
                 <Route path="/searchUsers/:searchTerm" element={<SearchUsers/>} /> 
+                <Route path="/createProduct" element={<AddNewProduct/>} /> 
                 <Route path="/loginUser" element={<LoginUser/>} /> 
                 <Route path="/addNewUser" element={<AddNewUser/>} /> 
                 <Route path="/addNewOrder" element={<AddNewOrder/>} /> 
+                <Route path="/editUser" element={<EditUser/>} /> 
+                <Route path="/editProduct" element={<EditProduct/>} /> 
+                <Route path="/account" element={<AccountPage/>} /> 
               </Routes>
             </CartProvider>
           </AuthProvider>

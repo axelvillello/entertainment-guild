@@ -1,12 +1,14 @@
 //Defines a component that defines a collection of props 
 //generically for many different types of products
 //WRITTEN BY: Axel Ello
+
 import { useState } from "react";
 import { useCart } from "./providers/CartProvider";
 
 const Product = (props) => {
     const [enlarged, setEnlarged] = useState(false);
     const cart = useCart();
+    const formattedDate = new Date(props.published).toLocaleDateString();
 
     return (
         <div
@@ -19,13 +21,14 @@ const Product = (props) => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                textAlign: "center",
                 overflow: "hidden",
                 margin: "20px",
                 padding: "10px",
                 transition: "all 0.3s",
                 backgroundColor: "#ADD8E6",
                 cursor: "pointer",
-                borderRadius: "10px"
+                borderRadius: "10px",
             }}>
             {!enlarged?
             (
@@ -38,11 +41,12 @@ const Product = (props) => {
             :
             (
                 <div>
-                    <h2>{props.title}</h2>
-                    <h3>{props.source}</h3>
-                    <span>
+                    <h2 style={{fontSize: "40px"}}>{props.title}</h2>
+                    <span style={{display: "flex", justifyContent: "center", alignItems: "center",
+                        textAlign: "center", columnGap: "10px"}}>
                         ${props.price} AUD 
-                        <button onClick={(e) => {
+                        {/*Transfers added item to cart context */}
+                        <button className="Ribbon-options" onClick={(e) => {
                             e.stopPropagation();
                             cart.addToCart({
                                 id: props.id,
@@ -54,15 +58,16 @@ const Product = (props) => {
                             Add to Cart
                         </button>
                     </span>
-                    <p>Author: {props.author}</p>
+                    <p><b>Author:</b> {props.author}</p>
+                    <p><b>Published:</b> {formattedDate}</p>
+                    <p><b>Source:</b> {props.source}</p>
                     <div style = {{
                         width: "100%",
                         overflowY: "auto",
                         height: "100px"
                     }}>
-                        <p>{props.description}</p>
+                        <p style={{backgroundColor: "white"}}>{props.description}</p>
                     </div>
-                    <p>Published: {props.published}</p>
                 </div>
             )
             }

@@ -1,3 +1,6 @@
+//Home ribbon that provides navigation options to the user
+//WRITTEN BY: Axel Ello
+
 import { useAuth } from "./providers/AuthProvider";
 import { Link, useNavigate } from 'react-router-dom';
 import { Navigate } from "react-router-dom";
@@ -64,6 +67,7 @@ const HomeRibbon = () => {
                     </span>
                 )
                 :
+                //Conditional rendering for admin only options
                 auth.user.IsAdmin === true ? (
                     <span>
                         <button
@@ -72,6 +76,20 @@ const HomeRibbon = () => {
                                 fontWeight: "bold"
                             }} 
                             onClick={() => navigate("/")}> Home </button>
+                        
+                        <button
+                            className="Ribbon-options"
+                            style={{
+                                fontWeight: "bold"
+                            }} 
+                            onClick={() => navigate("/createProduct")}> Create Product </button>
+
+                        <button
+                            className="Ribbon-options"
+                            style={{
+                                fontWeight: "bold"
+                            }} 
+                            onClick={() => navigate("/addNewUser")}> Create User </button>
 
                         <button
                             className="Ribbon-options"
@@ -83,6 +101,7 @@ const HomeRibbon = () => {
                 ) 
                 : 
                 (
+                    //Logged in non-admin user ribbon
                     <span>
                         <button
                             className="Ribbon-options"
@@ -116,6 +135,13 @@ const HomeRibbon = () => {
                                 }} 
                                 onClick={() => navigate("/displayProducts/Games")}> Games </button>
                         </span>
+                        
+                        <button
+                                className="Ribbon-options"
+                                style={{
+                                    fontWeight: "bold"
+                                }} 
+                                onClick={() => navigate("/account")}> {auth.user?.UserName} </button>
 
                         <button
                             className="Ribbon-options"

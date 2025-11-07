@@ -1,3 +1,6 @@
+//Provider component for the shopping cart
+//WRITTEN BY: Axel Ello
+
 import {useContext, createContext, useState, useEffect} from "react";
 import { useSnackbar } from "./SnackbarProvider";
 
@@ -11,27 +14,27 @@ const CartProvider =({children}) => {
 
     const sbar = useSnackbar();
 
+    //Stores cart items as JSON data
     useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(cart));
     }, [cart]);
+
 
     const addToCart = (product) => {
         setCart((prevCart) => {
             const existingItem = prevCart.find(item => item.id === product.id);
 
+            //Increments quantity of item if already in cart
             if (existingItem) {
                 return prevCart.map(item => item.id === product.id
-                    ? { ...item, quantity: (item.quantity + 1) }
-                    : item
+                    ? { ...item, quantity: (item.quantity + 1) } : item
             );
             }
             else {
                 return [...prevCart, product];
             }
-
         });
 
-        
         sbar.setSnackMsg('Added to cart!', 'info');
         console.log(product);
     };

@@ -1,4 +1,7 @@
-import { Box, FormControl, FormGroup, TextField, Button } from '@mui/material';
+//Component for creating a new order 
+//WRITTEN BY: Axel Ello
+
+import { Box, FormControl, FormGroup, TextField, Button, Select, InputLabel, MenuItem } from '@mui/material';
 import { useState, useEffect } from "react";
 import { tryAddNewOrder } from './helpers/orderHelper';
 import { useLocation } from 'react-router-dom';
@@ -14,12 +17,12 @@ const AddNewOrder = () => {
     const [suburb, setSuburb] = useState("");
     const [state, setState] = useState("");
     const [result, setResult] = useState("");
-    const [nextReady, setNextReady] = useState(false);
+    const [nextReady, setNextReady] = useState(false);  //flag for when to progress through screen
     const location = useLocation();
     const navigate = useNavigate();
     const auth = useAuth();
     const shopCart = useCart();
-    const snackbar = useSnackbar();
+    const sbar = useSnackbar();
 
     useEffect(() => {
             setNextReady(true);
@@ -28,20 +31,36 @@ const AddNewOrder = () => {
     
     useEffect(() => {
         if (result === "Order created successfully!") {
-            snackbar.setSnackMsg(result, "success");
+            sbar.setSnackMsg(result, "success");
             shopCart.clearCart();
             navigate("/");
         }
         else if (result === "Error creating order"){
-            snackbar.setSnackMsg(result, "error");
+            sbar.setSnackMsg(result, "error");
         }
         else if (result) {
-            snackbar.setSnackMsg(result, "info");
+            sbar.setSnackMsg(result, "info");
         }
     }, [result]);
 
-    
+    function handleAddDetails(event) {
+        const errors = [];
+
+        if (!streetAddress || !suburb || !state || !postCode) {
+            errors.push("Shipping details cannot be blank!");
+        }
+
+        if (errors.length > 0) {
+            const errorMessage = errors.join('\n'); 
+            sbar.setSnackMsg(errorMessage, "warning");
+        }
+        else {  
+            setNextReady(!nextReady);
+        }
+    }
+
     function handleAddOrder() {
+        
         tryAddNewOrder(
             auth.user.UserID, 
             auth.user.Email, 
@@ -61,8 +80,15 @@ const AddNewOrder = () => {
         setStreetAddress(event.target.value);
     }
 
+    //Replacement using regex found via Gemini
     const handlePostCodeChange = (event) => {
-        setPostCode(event.target.value);
+        const filteredValue = event.target.value.replace(/[^0-9]/g, '');
+
+        if (filteredValue.length !== event.target.value.length) {
+            sbar.setSnackMsg("Postcodes can only contain numbers", "warning");
+        }
+ 
+        setPostCode(filteredValue);
     }
 
     const handleSuburbChange = (event) => {
@@ -77,19 +103,20 @@ const AddNewOrder = () => {
         <span style={{
             display: "flex", 
             justifyContent: "center", 
+            textAlign: "center",
             alignItems: "center",
             flexDirection: "column"
           }}>
             {nextReady ? (
                 <Box display="flex" justifyContent="center">
                     <Box
-                        width={300}
-                        alignItems="left"
+                        width={400}
+                        textAlign="center"
                         sx={{
                         '.MuiTextField-root, .MuiFormControl-root': { m: 1, ml: 0 },
                         '.MuiButton-root': { m: 1 },
                     }}>
-                        <h1>Shipping Details</h1>
+                        <h1 className="Page-headings">Shipping Details</h1>
                             <FormControl>
                                 <FormGroup>
                                     <TextField id="streetaddress-field" label="Street Address" variant="outlined"
@@ -99,46 +126,70 @@ const AddNewOrder = () => {
                                     <TextField id="suburb-field" label="Suburb" variant="outlined"
                                     value={suburb} onChange={handleSuburbChange} />
                                 </FormGroup>
-                                <FormGroup>
-                                    <TextField id="state-field" label="State" variant="outlined"
-                                    value={state} onChange={handleStateChange} />
-                                </FormGroup>
+                                <FormControl fullWidth>
+                                    <FormGroup>
+                                        <InputLabel id="state-label">State</InputLabel>
+                                            <Select
+                                                labelId="state-label"
+                                                id="state-select"
+                                                value={state}
+                                                label="State"
+                                                onChange={handleStateChange}
+                                            >
+                                                <MenuItem value={"ACT"}>ACT</MenuItem>
+                                                <MenuItem value={"NSW"}>NSW</MenuItem>
+                                                <MenuItem value={"NT"}>NT</MenuItem>
+                                                <MenuItem value={"QLD"}>QLD</MenuItem>
+                                                <MenuItem value={"SA"}>SA</MenuItem>
+                                                <MenuItem value={"TAS"}>TAS</MenuItem>
+                                                <MenuItem value={"VIC"}>VIC</MenuItem>
+                                                <MenuItem value={"WA"}>WA</MenuItem> 
+                                        </Select>
+                                    </FormGroup>
+                                </FormControl>
                                 <FormGroup>
                                     <TextField id="postcode-field" label="Post Code" variant="outlined"
-                                    value={postCode} onChange={handlePostCodeChange} />
+                                    value={postCode} onChange={handlePostCodeChange}/>
                                 </FormGroup>
                             </FormControl>
                             <Box >
-                                <Button onClick={() => setNextReady(!nextReady)}>Next</Button>
+                                <Button onClick={() => handleAddDetails()}>Next</Button>
                             </Box>
-                            <TextField id="result" disabled label="Added order result" value={result} />
                     </Box >
                 </Box >
             )
             :
             (
+                //If user is not logged in, automatically renders log in component
                 !auth.user ? (
                 <LoginUser/>
             )
             :
             (
-                <div style={{textAlign: "left"}}>
-                    <h1>Order Confirmation</h1>
-                    <p>Name: {auth.user.Name}</p>
-                    <p>Email: {auth.user.Email}</p>
-                    <p>Street Address: {streetAddress}</p>
-                    <p>Suburb: {suburb}</p>
-                    <p>State: {state}</p>
-                    <p>Post Code: {postCode}</p>
-                    <h3>Order Content</h3>
-                    {shopCart.cart.map((i) => (<p>${(i.price*i.quantity).toFixed(2)} - {i.title}</p>))}
-                    <span style={{display: "flex", flexDirection: "column", gap: "8px"}}>
-                        <b>Total: ${shopCart.cart.reduce((sum, item) => sum + (item.price*item.quantity), 0)}</b>
+                <div style={{display: "flex", 
+                                justifyContent: "center",
+                                alignItems: "center", 
+                                textAlign: "center",
+                                flexDirection: "column",
+                                paddingBottom: "50px"}}>
+                    <h1 className='Page-headings'>Order Summary</h1>
+                    <span style={{textAlign: "left"}}>
+                        <p><b>Name:</b> {auth.user.Name}</p>
+                        <p><b>Email:</b> {auth.user.Email}</p>
+                        <p><b>Street Address:</b> {streetAddress}</p>
+                        <p><b>Suburb:</b> {suburb}</p>
+                        <p><b>State:</b> {state}</p>
+                        <p><b>Post Code:</b> {postCode}</p>
                     </span>
-                    <button onClick={() => handleAddOrder()}>Confirm Order</button>
+                    
+                    <h3 style={{ fontWeight: "bold", textDecorationLine: "underline", fontSize: "30px"}}>Order Content</h3>
+                    {shopCart.cart.map((i) => (<p>${(i.price*i.quantity).toFixed(2)} - {i.quantity} x {i.title}</p>))}
+                    <span style={{display: "flex", flexDirection: "column", gap: "8px", borderTop: "1px solid #000000",}}>
+                        <b>Order Total: ${shopCart.cart.reduce((sum, item) => sum + (item.price*item.quantity), 0)}</b>
+                    </span>
+                    <button className="Ribbon-options" style={{height: "80px", width: "200px", margin: "10px", backgroundColor: "green", color: "white", fontSize: "20px", borderRadius: "15px"}} onClick={() => handleAddOrder()}>Confirm Order</button>
                 </div>
-            )
-                
+            )   
         )}
         </span>
     );

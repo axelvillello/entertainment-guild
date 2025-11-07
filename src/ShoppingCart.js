@@ -25,6 +25,7 @@ const ShoppingCart = () => {
                 Shopping Cart 🛒 {shopCart?.cart?.reduce((total, item) => total + item.quantity, 0) || 0}
             </button>
             
+            {/*Rendering for when cart is closed */}
             {cartOpen && (
                 <div
                     className="Shop-cart" 
@@ -55,6 +56,8 @@ const ShoppingCart = () => {
                     )
                     :
                     (
+                        //Rendering for when cart is open
+                        //Empty tag for parent purposes
                         <>
                         <div className="Shop-cart-txt">
                             <span 
@@ -70,7 +73,7 @@ const ShoppingCart = () => {
                                     marginBottom: "1px",
                                     paddingRight: "1px"
                                 }}>
-                                    {shopCart.cart.map((i) => (<p><span style={{fontWeight: "bold"}}>${(i.price*i.quantity).toFixed(2)}, </span> {i.quantity} x {i.title} </p>))}
+                                    {shopCart.cart.map((i) => (<p><span style={{fontWeight: "bold"}}>${(i.price*i.quantity).toFixed(2)} </span>  {i.quantity} x {i.title} </p>))}
                             </span>
                         
                             <span style={{
@@ -82,6 +85,7 @@ const ShoppingCart = () => {
                             }}>
                                 <b>Total: ${shopCart.cart.reduce((sum, item) => sum + (item.price*item.quantity), 0).toFixed(2)}</b>
                                 <button
+                                    className="Ribbon-options"
                                     style={{
                                         backgroundColor: "green",
                                         fontWeight: "bold"

@@ -1,3 +1,6 @@
+//Component definition for rendering user search results
+//WRITTEN BY: Axel Ello
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import User from "./User";
@@ -12,7 +15,7 @@ const SearchUsers = () => {
     const auth = useAuth();
     const {searchTerm} = useParams();
 
-    //GET request for all products 
+    //GET request for all users 
     useEffect (() => {
         loading.setLoadingStatus(true);
         const promise = axios.get("http://localhost:3001/api/inft3050/User", {withCredentials: true});
@@ -41,12 +44,12 @@ const SearchUsers = () => {
             }
         }>
             <Search/>
-            <h1 display="flex" justifyContent="center" alignItems="center">{auth.user?.IsAdmin ? "User Search Results" : "Search Results"}</h1>
+            <h1 className="Page-headings" display="flex" justifyContent="center" alignItems="center">{auth.user?.IsAdmin ? "User Search Results" : "Search Results"}</h1>
             <div 
                 className="Container-flex"
                 style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(1, 1fr)", 
+                    gridTemplateColumns: "repeat(2, 1fr)", 
                 }}>
                 {loading.loadingProg ? 
                     (
